@@ -7,44 +7,44 @@ from esphome.const import CONF_ID
 
 CODEOWNERS = ["@badbadc0ffee"]
 DEPENDENCIES = ["i2c"]
-ds1307_ns = cg.esphome_ns.namespace("ds1307")
-DS1307Component = ds1307_ns.class_("DS1307Component", time.RealTimeClock, i2c.I2CDevice)
-WriteAction = ds1307_ns.class_("WriteAction", automation.Action)
-ReadAction = ds1307_ns.class_("ReadAction", automation.Action)
+ds3231_ns = cg.esphome_ns.namespace("ds3231")
+DS3231Component = ds3231_ns.class_("DS3231Component", time.RealTimeClock, i2c.I2CDevice)
+WriteAction = ds3231_ns.class_("WriteAction", automation.Action)
+ReadAction = ds3231_ns.class_("ReadAction", automation.Action)
 
 
 CONFIG_SCHEMA = time.TIME_SCHEMA.extend(
     {
-        cv.GenerateID(): cv.declare_id(DS1307Component),
+        cv.GenerateID(): cv.declare_id(DS3231Component),
     }
 ).extend(i2c.i2c_device_schema(0x68))
 
 
 @automation.register_action(
-    "ds1307.write_time",
+    "ds3231.write_time",
     WriteAction,
     cv.Schema(
         {
-            cv.GenerateID(): cv.use_id(DS1307Component),
+            cv.GenerateID(): cv.use_id(DS3231Component),
         }
     ),
 )
-async def ds1307_write_time_to_code(config, action_id, template_arg, args):
+async def ds3231_write_time_to_code(config, action_id, template_arg, args):
     var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
     return var
 
 
 @automation.register_action(
-    "ds1307.read_time",
+    "ds3231.read_time",
     ReadAction,
     automation.maybe_simple_id(
         {
-            cv.GenerateID(): cv.use_id(DS1307Component),
+            cv.GenerateID(): cv.use_id(DS3231Component),
         }
     ),
 )
-async def ds1307_read_time_to_code(config, action_id, template_arg, args):
+async def ds3231_read_time_to_code(config, action_id, template_arg, args):
     var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
     return var

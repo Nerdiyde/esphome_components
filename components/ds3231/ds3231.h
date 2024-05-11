@@ -5,9 +5,9 @@
 #include "esphome/components/time/real_time_clock.h"
 
 namespace esphome {
-namespace ds1307 {
+namespace ds3231 {
 
-class DS1307Component : public time::RealTimeClock, public i2c::I2CDevice {
+class DS3231Component : public time::RealTimeClock, public i2c::I2CDevice {
  public:
   void setup() override;
   void update() override;
@@ -19,7 +19,7 @@ class DS1307Component : public time::RealTimeClock, public i2c::I2CDevice {
  protected:
   bool read_rtc_();
   bool write_rtc_();
-  union DS1307Reg {
+  union DS3231Reg {
     struct {
       uint8_t second : 4;
       uint8_t second_10 : 3;
@@ -54,17 +54,17 @@ class DS1307Component : public time::RealTimeClock, public i2c::I2CDevice {
       bool out : 1;
     } reg;
     mutable uint8_t raw[sizeof(reg)];
-  } ds1307_;
+  } ds3231_;
 };
 
-template<typename... Ts> class WriteAction : public Action<Ts...>, public Parented<DS1307Component> {
+template<typename... Ts> class WriteAction : public Action<Ts...>, public Parented<DS3231Component> {
  public:
   void play(Ts... x) override { this->parent_->write_time(); }
 };
 
-template<typename... Ts> class ReadAction : public Action<Ts...>, public Parented<DS1307Component> {
+template<typename... Ts> class ReadAction : public Action<Ts...>, public Parented<DS3231Component> {
  public:
   void play(Ts... x) override { this->parent_->read_time(); }
 };
-}  // namespace ds1307
+}  // namespace ds3231
 }  // namespace esphome
